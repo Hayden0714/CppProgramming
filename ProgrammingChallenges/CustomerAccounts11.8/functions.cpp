@@ -1,17 +1,19 @@
-//file that holds all of the functions for the customer accounts program
+// file that holds all of the functions for the customer accounts program
 
 #include <iomanip>
 
-//get input from the user
-int getUserInput(){
+// get input from the user
+int getUserInput()
+{
   int input;
   cout << "Please make a selection by choosing a number: " << endl;
   cin >> input;
   return input;
 }
 
-//show the main menu
-void showMainMenu(){
+// show the main menu
+void showMainMenu()
+{
   cout << "\nHere are your options: " << endl;
   cout << "1 - Enter new data." << endl;
   cout << "2 - Edit existing data." << endl;
@@ -19,8 +21,9 @@ void showMainMenu(){
   cout << "4 - Exit the program." << endl;
 }
 
-//display data for a single customer
-void displaySingleCustomerData(Customer c){
+// display data for a single customer
+void displaySingleCustomerData(Customer c)
+{
   cout << "Name: " << c.name << endl;
   cout << "Address: " << c.address << endl;
   cout << "City, State, and Zip: " << c.cityStateZip << endl;
@@ -29,40 +32,48 @@ void displaySingleCustomerData(Customer c){
   cout << "Date of Last Payment: " << c.lastPayment << endl;
 }
 
-//enter new data
-void enterNewData(Customer arr[], int size, int index){
-  //temp customer
+// enter new data
+void enterNewData(Customer *arr, int size, int index)
+{
+  // temp customer
   Customer temp;
-  //ask the user to fill out each section for the new entry
-  if(index > 9){
-    //array is full
+  // ask the user to fill out each section for the new entry
+  if (index > 9)
+  {
+    // array is full
     cout << "Sorry there is no more room for new data." << endl;
-  }else{
+  }
+  else
+  {
     cout << "Please enter the name of the customer: " << endl;
     getline(cin, temp.name);
 
-    while(temp.name == ""){
+    while (temp.name == "")
+    {
       cout << "Please enter the name of the customer: " << endl;
       getline(cin, temp.name);
     }
 
     cout << "Please enter the address of the customer: " << endl;
     getline(cin, temp.address);
-    while(temp.address == ""){
+    while (temp.address == "")
+    {
       cout << "Please enter the address of the customer: " << endl;
       getline(cin, temp.address);
     }
 
     cout << "Please enter the City, State, and Zip Code of the customer: " << endl;
     getline(cin, temp.cityStateZip);
-    while(temp.cityStateZip == ""){
+    while (temp.cityStateZip == "")
+    {
       cout << "Please enter the City, State, and Zip Code of the customer: " << endl;
       getline(cin, temp.cityStateZip);
     }
 
     cout << "Please enter the Phone Number of the customer: " << endl;
     getline(cin, temp.phoneNumber);
-    while(temp.phoneNumber == ""){
+    while (temp.phoneNumber == "")
+    {
       cout << "Please enter the Phone Number of the customer: " << endl;
       getline(cin, temp.phoneNumber);
     }
@@ -70,7 +81,8 @@ void enterNewData(Customer arr[], int size, int index){
     cout << "Please enter the balance of the account (must be positive): " << endl;
     cin >> temp.balance;
 
-    while((temp.balance < 0) || (to_string(temp.balance) == "")){
+    while ((temp.balance < 0) || (to_string(temp.balance) == ""))
+    {
       cout << "Please enter a positive number." << endl;
       cout << "Please enter the balance of the account: " << endl;
       cin >> temp.balance;
@@ -78,31 +90,33 @@ void enterNewData(Customer arr[], int size, int index){
 
     cout << "Please enter the date of the last payment for the account: " << endl;
     getline(cin, temp.lastPayment);
-    while(temp.lastPayment == ""){
+    while (temp.lastPayment == "")
+    {
       cout << "Please enter the date of the last payment for the account: " << endl;
       getline(cin, temp.lastPayment);
     }
 
-    //add the temp customer to the array
+    // add the temp customer to the array
     arr[index] = temp;
 
-    //say the data back to the customer
+    // say the data back to the customer
     cout << "\nYou have entered: " << endl;
     displaySingleCustomerData(temp);
   }
 }
 
-//edit existing data
-void editData(Customer arr[], int size){
+// edit existing data
+void editData(Customer *arr, int size)
+{
 
-  //have the user select what number in the array they want to
+  // have the user select what number in the array they want to
   cout << "Please select a number between 1 - 10" << endl;
   int input = getUserInput();
 
-  //go to that index in the array, and display that customer info
-  displaySingleCustomerData(arr[input]);
+  // go to that index in the array, and display that customer info
+  displaySingleCustomerData(arr[input - 1]);
 
-  //ask the user what piece of information they want to change
+  // ask the user what piece of information they want to change
   cout << "\nWhat field would you like to change?" << endl;
   cout << "1 - Name" << endl;
   cout << "2 - Address" << endl;
@@ -113,70 +127,78 @@ void editData(Customer arr[], int size){
   int fieldInput;
   cin >> fieldInput;
 
-  //switch case to determine what the user wants to input
-  switch(fieldInput){
-    case 1:
+  // switch case to determine what the user wants to input
+  switch (fieldInput)
+  {
+  case 1:
+    cout << "Please enter the name of the customer: " << endl;
+    getline(cin, arr[input].name);
+
+    while (arr[input].name == "")
+    {
       cout << "Please enter the name of the customer: " << endl;
       getline(cin, arr[input].name);
-
-      while(arr[input].name == ""){
-        cout << "Please enter the name of the customer: " << endl;
-        getline(cin, arr[input].name);
-      }
-      break;
-    case 2:
+    }
+    break;
+  case 2:
+    cout << "Please enter the address of the customer: " << endl;
+    getline(cin, arr[input].address);
+    while (arr[input].address == "")
+    {
       cout << "Please enter the address of the customer: " << endl;
       getline(cin, arr[input].address);
-      while(arr[input].address == ""){
-        cout << "Please enter the address of the customer: " << endl;
-        getline(cin, arr[input].address);
-      }
-      break;
-    case 3:
+    }
+    break;
+  case 3:
+    cout << "Please enter the City, State, and Zip Code of the customer: " << endl;
+    getline(cin, arr[input].cityStateZip);
+    while (arr[input].cityStateZip == "")
+    {
       cout << "Please enter the City, State, and Zip Code of the customer: " << endl;
       getline(cin, arr[input].cityStateZip);
-      while(arr[input].cityStateZip == ""){
-        cout << "Please enter the City, State, and Zip Code of the customer: " << endl;
-        getline(cin, arr[input].cityStateZip);
-      }
-      break;
-    case 4:
+    }
+    break;
+  case 4:
+    cout << "Please enter the Phone Number of the customer: " << endl;
+    getline(cin, arr[input].phoneNumber);
+    while (arr[input].phoneNumber == "")
+    {
       cout << "Please enter the Phone Number of the customer: " << endl;
       getline(cin, arr[input].phoneNumber);
-      while(arr[input].phoneNumber == ""){
-        cout << "Please enter the Phone Number of the customer: " << endl;
-        getline(cin, arr[input].phoneNumber);
-      }
-      break;
-    case 5:
-      cout << "Please enter the balance of the account (must be positive): " << endl;
-      cin >> arr[input].balance;
+    }
+    break;
+  case 5:
+    cout << "Please enter the balance of the account (must be positive): " << endl;
+    cin >> arr[input].balance;
 
-      while((arr[input].balance < 0) || (to_string(arr[input].balance) == "")){
-        cout << "Please enter a positive number." << endl;
-        cout << "Please enter the balance of the account: " << endl;
-        cin >> arr[input].balance;
-      }
-      break;
-    case 6:
+    while ((arr[input].balance < 0) || (to_string(arr[input].balance) == ""))
+    {
+      cout << "Please enter a positive number." << endl;
+      cout << "Please enter the balance of the account: " << endl;
+      cin >> arr[input].balance;
+    }
+    break;
+  case 6:
+    cout << "Please enter the date of the last payment for the account: " << endl;
+    getline(cin, arr[input].lastPayment);
+    while (arr[input].lastPayment == "")
+    {
       cout << "Please enter the date of the last payment for the account: " << endl;
       getline(cin, arr[input].lastPayment);
-      while(arr[input].lastPayment == ""){
-        cout << "Please enter the date of the last payment for the account: " << endl;
-        getline(cin, arr[input].lastPayment);
-      }
-      break;
-    default:
-      break;
+    }
+    break;
+  default:
+    break;
   }
 }
 
-//display all of the data in the array
-void displayData(Customer arr[], int index){
-  for(int i = 0; i < index; i++){
+// display all of the data in the array
+void displayData(Customer arr[], int index)
+{
+  for (int i = 0; i < index; i++)
+  {
     cout << endl;
-    displaySingleCustomerData(arr[i]);
+    displaySingleCustomerData(arr[i + 1]);
     cout << endl;
   }
-
 }
