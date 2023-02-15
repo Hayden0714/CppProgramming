@@ -19,9 +19,11 @@ struct Customer
 
 // prototypes
 int getUserInput();
+string getStringInput();
 void enterNewData(Customer *arr, int, int);
 void editData(Customer *arr, int);
 void displayData(Customer *arr, int);
+void searchData(Customer *arr, int, int);
 void showMainMenu();
 
 // file inculdes
@@ -41,7 +43,8 @@ int main()
     // start by displaying a menu to the user and getting their input
     showMainMenu();
     input = getUserInput();
-
+    string strInput;
+    
     // switch case to determine what function gets ran based on the input
     switch (input)
     {
@@ -56,6 +59,10 @@ int main()
       displayData(customers, index);
       break;
     case 4:
+      strInput = getStringInput();
+      searchData(customers, NUM_CUSTOMERS, strInput);
+      break;
+    case 5:
       // this is the exit the program case9
       running = false;
       break;

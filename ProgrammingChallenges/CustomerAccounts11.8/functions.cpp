@@ -11,6 +11,15 @@ int getUserInput()
   return input;
 }
 
+// get string input from the user
+string getStringInput()
+{
+  string input;
+  cout << "Please enter a string: " << endl;
+  cin >> input;
+  return input;
+}
+
 // show the main menu
 void showMainMenu()
 {
@@ -18,7 +27,8 @@ void showMainMenu()
   cout << "1 - Enter new data." << endl;
   cout << "2 - Edit existing data." << endl;
   cout << "3 - Display current data." << endl;
-  cout << "4 - Exit the program." << endl;
+  cout << "4 - Search for a customer." << endl;
+  cout << "5 - Exit the program." << endl;
 }
 
 // display data for a single customer
@@ -189,6 +199,42 @@ void editData(Customer *arr, int size)
     break;
   default:
     break;
+  }
+}
+
+// search through the array for matching account with the name that is
+// entered
+void searchData(Customer *arr, int size, string name)
+{
+  Customer tempCustomers[10];
+  int index = 0;
+  // loop through the array searching for matches to what was entered
+  for (int i = 0; i < size; i++)
+  {
+    string s1 = arr[i].name;
+    if (s1.find(name) != string::npos)
+    {
+      tempCustomers[index] = arr[i];
+      index++;
+    }
+  }
+
+  cout << "Searching for " << name << "..." << endl;
+
+  // print all of the matches, if none then say that
+  if (index > 0)
+  {
+    cout << "There are " << index << " matches:" << endl;
+    for (int i = 0; i < index; i++)
+    {
+      cout << endl;
+      displaySingleCustomerData(arr[i + 1]);
+      cout << endl;
+    }
+  }
+  else
+  {
+    cout << "There were no matches." << endl;
   }
 }
 
