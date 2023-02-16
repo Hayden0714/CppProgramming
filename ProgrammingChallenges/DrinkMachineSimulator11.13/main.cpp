@@ -3,21 +3,26 @@
 
 #include <iostream>
 #include <cstring>
+#include <iomanip>
 using namespace std;
 
 // constants
-
-// prototypes
-int getUserInput();
-void showMainMenu();
 
 // drink inventory struct
 struct Drink
 {
   string name;
   double cost;
-  int numInMachine
+  int numInMachine;
 };
+
+// prototypes
+int getUserInput();
+void showMainMenu();
+void showDrinks(Drink *drinks);
+double getDoubleInput();
+double collectMoney(int, Drink *drinks);
+
 
 // file includes
 #include "functions.cpp"
@@ -28,34 +33,38 @@ int main()
   // variables
   bool running = true;
   int input = 0;
+  double total = 0;
+
   Drink inventory[5] = { {"Cola", 0.75, 20},
                          {"Root Beer", 0.75, 20},
                          {"Lemon-Lime", 0.75, 20},
                          {"Grape Soda", 0.80, 20},
-                         {"Cream Soda", 0.80, 20} }
+                         {"Cream Soda", 0.80, 20} };
 
   // show the menu, let the user buy a drink or exit the program
   while (running)
   {
-    showMainMenu();
+    showMainMenu(inventory);
     input = getUserInput();
 
-    switch (input)
+    
+    if(input != 6)
     {
-    case 1:
-      // the user wants to buy a drink
-      break;
-    case 2:
-      // the user wants to exit the program
+      if(inventory[input-1].numInMachine < 1){
+      cout << "Sorry but we are all out of that drink." << endl;
+      }else{
+      total += collectMoney(input, inventory);
+      }
+    }else{
+      //print how much money was put into the vending machine
+      cout << "This vending machine made: $" << setprecision(2) << fixed << total;
 
-      // display a report of how much money the machine made
-
-      // set running to false and exit
-      break;
-    default:
-      break;
+      //exit the program
+      running = false;
     }
   }
+
+  cout << "\nThank you for using the vending machine!" << endl;
 
   return 0;
 }
