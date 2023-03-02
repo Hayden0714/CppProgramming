@@ -1,13 +1,16 @@
-//patient class for the 13.4 programming challenge
+// patient class for the 13.4 programming challenge
 
-class Patient {
+class Patient
+{
+public:
   string firstMiddleLastName;
   string addressCityStateZip;
   string phoneNumber;
   string emergencyName;
   string emergencyPhone;
 
-  Patient(string f, string a, string p, string en, string ep){
+  Patient(string f, string a, string p, string en, string ep)
+  {
     firstMiddleLastName = f;
     addressCityStateZip = a;
     phoneNumber = p;
@@ -15,53 +18,64 @@ class Patient {
     emergencyPhone = ep;
   }
 
-  //getters
-  string getName(){
+  // getters
+  string getName()
+  {
     return firstMiddleLastName;
   }
 
-  string getAddress(){
+  string getAddress()
+  {
     return addressCityStateZip;
   }
 
-  string getPhoneNumber(){
+  string getPhoneNumber()
+  {
     return phoneNumber;
   }
 
-  string getEmergencyName(){
+  string getEmergencyName()
+  {
     return emergencyName;
   }
 
-  string getEmergencyPhone(){
+  string getEmergencyPhone()
+  {
     return emergencyPhone;
   }
 
-  //setters
-  void setName(string n){
+  // setters
+  void setName(string n)
+  {
     firstMiddleLastName = n;
   }
 
-  void setAddress(string a){
+  void setAddress(string a)
+  {
     addressCityStateZip = a;
   }
 
-  void setPhoneNumber(string p){
+  void setPhoneNumber(string p)
+  {
     phoneNumber = p;
   }
 
-  void setEmergencyName(string en){
+  void setEmergencyName(string en)
+  {
     emergencyName = en;
   }
 
-  void setEmergencyPhone(string ep){
+  void setEmergencyPhone(string ep)
+  {
     emergencyPhone = ep;
   }
 
-  void printData(){
-    cout << "Patient Name: " << firstMiddleLastName << endl;
+  void printData()
+  {
+    cout << "\nPatient Name: " << firstMiddleLastName << endl;
     cout << "Patient Address: " << addressCityStateZip << endl;
     cout << "Patient Phone Number: " << phoneNumber << endl;
     cout << "Emergency Contact Name: " << emergencyName << endl;
     cout << "Emergency Contact Phone Number: " << emergencyPhone << endl;
   }
-}
+};
