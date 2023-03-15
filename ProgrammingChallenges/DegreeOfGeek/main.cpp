@@ -9,20 +9,20 @@ using namespace std;
 const int STUDENTS = 5;
 const int SCORES = 4;
 
+#include "getInput.cpp"
+#include "displayGrades.cpp"
+#include "calculateAverage.cpp"
+
 // prototypes
 void inputData(string &, double[]);
-void calcGrade(double[], string &, double &);
-void displayData(string, double[], double, string);
-
-#include "displayGrades.cpp"
-#include "getInput.cpp"
-#include "calculateAverage.cpp"
+void calcGrade(double[], char &, double &);
+void displayData(string, double[], double, char);
 
 // main
 int main()
 {
   string names[STUDENTS];
-  string grades[STUDENTS];
+  char grades[STUDENTS];
   double averages[STUDENTS];
   double student1[SCORES];
   double student2[SCORES];

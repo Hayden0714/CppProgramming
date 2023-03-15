@@ -1,6 +1,6 @@
 // display the data
 
-void displayData(string name, double testScores[], double average, string grade)
+void displayData(string name, double testScores[], double average, char grade)
 {
   // display the students name
   cout << "\nName: " << name << endl;
@@ -15,5 +15,5 @@ void displayData(string name, double testScores[], double average, string grade)
   cout << "Average: " << average << endl;
 
   // display the letter grade
-  cout << "Degree of Geek: " << grade << endl;
+  cout << "Grade: " << grade << endl;
 }
