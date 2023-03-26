@@ -1,30 +1,20 @@
-// course grades 15.11 assignment
-// hayden olmstead
-// Cpp with Dr. Lewis
-
 #include <iostream>
-#include <iomanip>
-#include <stdio.h>
-using namespace std;
+#include "CourseGrades.h"
 
-// file includes
-#include "CourseGrade.h"
-
-// constants
-
-// prototypes
-void printData(CourseGrade &);
-
-// main
 int main()
 {
-  cout << "Running the course grades..." << endl;
+  GradedActivity lab(85);               // lab scores 85
+  PassFailExam passFailExam(10, 3, 70); // 10 questions, 3 incorrect answers, 70% passing score
+  Essay essay(25, 20, 15, 10);          // grammar, spelling, length, and content
+  FinalExam finalExam(50, 10);          // 50 questions, 10 incorrect answers
 
-  // ask for the grades of each object that has a grade and create that
-  // object
+  CourseGrades courseGrades;
+  courseGrades.setLab(&lab);
+  courseGrades.setPassFailExam(&passFailExam);
+  courseGrades.setEssay(&essay);
+  courseGrades.setFinalExam(&finalExam);
 
-  // create a gradedactivity object with the objects already made
+  courseGrades.print();
 
-  // print out information about the graded activity object
   return 0;
 }
