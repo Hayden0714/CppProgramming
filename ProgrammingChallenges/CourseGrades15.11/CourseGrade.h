@@ -10,9 +10,6 @@ class CourseGrade
   GradedActivity *grades[4];
 
   // constructor
-  CourseGrade()
-  {
-  }
 
   // member functions
 
