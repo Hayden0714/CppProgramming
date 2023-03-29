@@ -3,75 +3,97 @@
 #include <string.h>
 #include <pthread.h>
 
+#define MAX 1024
 #define NUM_THREADS 4
+
+int total = 0;
+int n1, n2;
+char *s1, *s2;
+FILE *fp;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct
 {
-  char *s1;
-  char *s2;
   int start;
   int end;
-  int *global_count;
-  pthread_mutex_t *mutex;
 } ThreadData;
 
-void readf(char *s1, char *s2)
+int readf(FILE *fp)
 {
-  FILE *f = fopen("strings.txt", "r");
-  if (f == NULL)
+  if ((fp = fopen("strings.txt", "r")) == NULL)
   {
-    printf("Error opening file.\n");
-    exit(1);
+    printf("ERROR: can't open string.txt!\n");
+    return 0;
   }
-  fscanf(f, "%s %s", s1, s2);
-  fclose(f);
+  s1 = (char *)malloc(sizeof(char) * MAX);
+  if (s1 == NULL)
+  {
+    printf("ERROR: Out of memory!\n");
+    return -1;
+  }
+  s2 = (char *)malloc(sizeof(char) * MAX);
+  if (s2 == NULL)
+  {
+    printf("ERROR: Out of memory\n");
+    return -1;
+  }
+  s1 = fgets(s1, MAX, fp);
+  s2 = fgets(s2, MAX, fp);
+  n1 = strlen(s1) - 1;
+  n2 = strlen(s2) - 1;
+
+  if (s1 == NULL || s2 == NULL || n1 < n2)
+    return -1;
 }
 
-void *count_substrings(void *arg)
+void *num_substring(void *arg)
 {
   ThreadData *data = (ThreadData *)arg;
+  int i, j, k;
   int local_count = 0;
-  int s2_len = strlen(data->s2);
 
-  for (int i = data->start; i <= data->end - s2_len + 1; i++)
+  for (i = data->start; i <= data->end - n2 + 1; i++)
   {
-    if (strncmp(data->s1 + i, data->s2, s2_len) == 0)
+    int count = 0;
+    for (j = i, k = 0; k < n2; j++, k++)
     {
-      local_count++;
+      if (*(s1 + j) != *(s2 + k))
+      {
+        break;
+      }
+      else
+      {
+        count++;
+      }
+      if (count == n2)
+      {
+        local_count++;
+      }
     }
   }
 
-  pthread_mutex_lock
-      pthread_mutex_lock(data->mutex);
-  *(data->global_count) += local_count;
-  pthread_mutex_unlock(data->mutex);
+  pthread_mutex_lock(&mutex);
+  total += local_count;
+  pthread_mutex_unlock(&mutex);
 
   return NULL;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-  char s1[100], s2[50];
-  readf(s1, s2);
-  int n1 = strlen(s1);
-  int n2 = strlen(s2);
-  int global_count = 0;
+  readf(fp);
+
   pthread_t threads[NUM_THREADS];
   ThreadData thread_data[NUM_THREADS];
-  pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
   int range = n1 - n2 + 1;
   int chunk_size = range / NUM_THREADS;
 
   for (int i = 0; i < NUM_THREADS; i++)
   {
-    thread_data[i].s1 = s1;
-    thread_data[i].s2 = s2;
     thread_data[i].start = i * chunk_size;
     thread_data[i].end = (i == NUM_THREADS - 1) ? range - 1 : (i + 1) * chunk_size - 1;
-    thread_data[i].global_count = &global_count;
-    thread_data[i].mutex = &mutex;
-    pthread_create(&threads[i], NULL, count_substrings, (void *)&thread_data[i]);
+    pthread_create(&threads[i], NULL, num_substring, (void *)&thread_data[i]);
   }
 
   for (int i = 0; i < NUM_THREADS; i++)
@@ -79,6 +101,9 @@ int main()
     pthread_join(threads[i], NULL);
   }
 
-  printf("Number of matching substrings: %d\n", global_count);
+  printf("The number of substrings is: %d\n", total);
+  free(s1);
+  free(s2);
+  fclose(fp);
   return 0;
 }
