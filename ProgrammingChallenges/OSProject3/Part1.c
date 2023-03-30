@@ -15,7 +15,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 typedef struct
 {
   int start;
-  int end;
+  int stride;
 } ThreadData;
 
 int readf(FILE *fp)
@@ -50,9 +50,8 @@ void *num_substring(void *arg)
 {
   ThreadData *data = (ThreadData *)arg;
   int i, j, k;
-  int local_count = 0;
 
-  for (i = data->start; i <= data->end - n2 + 1; i++)
+  for (i = data->start; i <= n1 - n2; i += data->stride)
   {
     int count = 0;
     for (j = i, k = 0; k < n2; j++, k++)
@@ -67,14 +66,12 @@ void *num_substring(void *arg)
       }
       if (count == n2)
       {
-        local_count++;
+        pthread_mutex_lock(&mutex);
+        total++;
+        pthread_mutex_unlock(&mutex);
       }
     }
   }
-
-  pthread_mutex_lock(&mutex);
-  total += local_count;
-  pthread_mutex_unlock(&mutex);
 
   return NULL;
 }
@@ -86,13 +83,10 @@ int main(int argc, char *argv[])
   pthread_t threads[NUM_THREADS];
   ThreadData thread_data[NUM_THREADS];
 
-  int range = n1 - n2 + 1;
-  int chunk_size = range / NUM_THREADS;
-
   for (int i = 0; i < NUM_THREADS; i++)
   {
-    thread_data[i].start = i * chunk_size;
-    thread_data[i].end = (i == NUM_THREADS - 1) ? range - 1 : (i + 1) * chunk_size - 1;
+    thread_data[i].start = i;
+    thread_data[i].stride = NUM_THREADS;
     pthread_create(&threads[i], NULL, num_substring, (void *)&thread_data[i]);
   }
 
