@@ -6,7 +6,7 @@
 #include <sys/param.h>
 #include <sched.h>
 
-#define K 200
+#define K 200 // genreate a data node for K times in each thread
 
 struct Node
 {
@@ -25,6 +25,10 @@ struct thread_args
   int cpu_id;
   struct list *local_list;
 };
+
+pthread_mutex_t mutex_lock;
+
+struct list *List;
 
 void bind_thread_to_cpu(int cpuid)
 {
@@ -57,37 +61,41 @@ struct Node *generate_data_node()
 
 void *producer_thread(void *arg)
 {
-  bind_thread_to_cpu(((struct thread_args *)arg)->cpu_id);
+  struct thread_args *args = (struct thread_args *)arg;
+  bind_thread_to_cpu(args->cpu_id);
 
   struct Node *ptr;
   int counter = 0;
-  struct list *local_list = ((struct thread_args *)arg)->local_list;
 
   while (counter < K)
-    while (counter < K)
+  {
+    ptr = generate_data_node();
+
+    if (NULL != ptr)
     {
-      ptr = generate_data_node();
-
-      if (NULL != ptr)
+      ptr->data = 1;
+      if (args->local_list->header == NULL)
       {
-        ptr->data = 1;
-
-        if (local_list->header == NULL)
-        {
-          local_list->header = local_list->tail = ptr;
-        }
-        else
-        {
-          local_list->tail->next = ptr;
-          local_list->tail = ptr;
-        }
+        args->local_list->header = args->local_list->tail = ptr;
       }
-      ++counter;
+      else
+      {
+        args->local_list->tail->next = ptr;
+        args->local_list->tail = ptr;
+      }
     }
+    ++counter;
+  }
 }
 
 void merge_lists(struct list *global_list, struct list *local_list)
 {
+  if (!local_list->header)
+  {
+    return;
+  }
+
+  pthread_mutex_lock(&mutex_lock);
   if (global_list->header == NULL)
   {
     global_list->header = local_list->header;
@@ -98,13 +106,16 @@ void merge_lists(struct list *global_list, struct list *local_list)
     global_list->tail->next = local_list->header;
     global_list->tail = local_list->tail;
   }
+  pthread_mutex_unlock(&mutex_lock);
 }
 
 int main(int argc, char *argv[])
 {
   int i, num_threads;
+
   int NUM_PROCS;
   int *cpu_array = NULL;
+
   struct Node *tmp, *next;
   struct timeval starttime, endtime;
 
@@ -116,6 +127,9 @@ int main(int argc, char *argv[])
 
   num_threads = atoi(argv[1]);
   pthread_t producer[num_threads];
+  struct list *local_lists[num_threads];
+  struct thread_args args[num_threads];
+
   NUM_PROCS = sysconf(_SC_NPROCESSORS_CONF);
   if (NUM_PROCS > 0)
   {
@@ -123,36 +137,37 @@ int main(int argc, char *argv[])
     if (cpu_array == NULL)
     {
       printf("Allocation failed!\n");
+
       exit(0);
     }
     else
     {
       for (i = 0; i < NUM_PROCS; i++)
+      {
         cpu_array[i] = i;
+      }
     }
   }
 
-  struct list *global_list = (struct list *)malloc(sizeof(struct list));
-  if (NULL == global_list)
+  pthread_mutex_init(&mutex_lock, NULL);
+
+  List = (struct list *)malloc(sizeof(struct list));
+  if (NULL == List)
   {
     printf("End here\n");
     exit(0);
   }
-  global_list->header = global_list->tail = NULL;
-
-  struct thread_args args[num_threads];
-  struct list local_lists[num_threads];
-
-  for (i = 0; i < num_threads; i++)
-  {
-    local_lists[i].header = local_lists[i].tail = NULL;
-    args[i].cpu_id = cpu_array[i % NUM_PROCS];
-    args[i].local_list = &local_lists[i];
-  }
+  List->header = List->tail = NULL;
 
   gettimeofday(&starttime, NULL);
+
   for (i = 0; i < num_threads; i++)
   {
+    local_lists[i] = (struct list *)malloc(sizeof(struct list));
+    local_lists[i]->header = local_lists[i]->tail = NULL;
+    args[i].cpu_id = cpu_array[i % NUM_PROCS];
+    args[i].local_list = local_lists[i];
+
     pthread_create(&(producer[i]), NULL, producer_thread, &args[i]);
   }
 
@@ -161,15 +176,15 @@ int main(int argc, char *argv[])
     if (producer[i] != 0)
     {
       pthread_join(producer[i], NULL);
-      merge_lists(global_list, &local_lists[i]);
     }
+    merge_lists(List, local_lists[i]);
   }
 
   gettimeofday(&endtime, NULL);
 
-  if (global_list->header != NULL)
+  if (List->header != NULL)
   {
-    next = tmp = global_list->header;
+    next = tmp = List->header;
     while (tmp != NULL)
     {
       next = tmp->next;
@@ -178,8 +193,13 @@ int main(int argc, char *argv[])
     }
   }
   if (cpu_array != NULL)
+  {
     free(cpu_array);
-
+  }
+  for (i = 0; i < num_threads; i++)
+  {
+    free(local_lists[i]);
+  }
   printf("Total run time is %ld microseconds.\n", (endtime.tv_sec - starttime.tv_sec) * 1000000 + (endtime.tv_usec - starttime.tv_usec));
   return 0;
 }
