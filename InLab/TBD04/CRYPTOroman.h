@@ -1,11 +1,12 @@
 #include <string>
 using namespace std;
 
+
 class CRYPTOromanType{
   public:
     void setRoman(string);
     void romanToPositiveInteger();
-    void printPositiveInteger();
+    void printPositiveInteger() const;
     void printRoman() const;
     CRYPTOromanType();
     CRYPTOromanType(string);
@@ -13,4 +14,4 @@ class CRYPTOromanType{
   private:
     string CRYPTOromanNum;
     int num;
-}
+};

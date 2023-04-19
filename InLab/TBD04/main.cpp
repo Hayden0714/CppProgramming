@@ -1,4 +1,5 @@
 //main
+#include <iostream>
 #include "CRYPTOroman.h"
 using namespace std;
 

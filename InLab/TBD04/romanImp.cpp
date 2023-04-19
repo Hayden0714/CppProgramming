@@ -14,7 +14,7 @@ void CRYPTOromanType::printRoman() const{
 }
 
 void CRYPTOromanType::setRoman(string rString){
-  CRYPTOromanNum = string;
+  CRYPTOromanNum = rString;
   romanToPositiveInteger();
 }
 
@@ -37,7 +37,7 @@ void CRYPTOromanType::romanToPositiveInteger(){
         if(previous < 500)
           sum -= 2*previous;
         previous = 500;
-        break
+        break;
       case 'c':
         sum += 100;
         if(previous < 100)
@@ -56,7 +56,7 @@ void CRYPTOromanType::romanToPositiveInteger(){
           sum -= 2 * previous;
         previous = 10;
         break;
-      case '':
+      case 'v':
         sum += 5;
         if(previous < 5)
           sum -= 2 * previous;
