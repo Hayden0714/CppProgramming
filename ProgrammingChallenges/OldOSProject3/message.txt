@@ -1,4 +1,0 @@
-This is a message that is serving as a test for Part 2 of Project 3 for
-our CS4500, Operating Systems I course.
-
-If you're seeing this then the program should be working as intended!
